@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+  <link href="styles/radio.css" rel="stylesheet">
+  <title>FM Radio</title>
+</head>
+<body>
+<div x-data="{message: 'Hello World', adding: false, removing: false}" class="radio w-screen h-screen flex justify-center items-center">
+  <div class="max-w-75 flex w-full">
+    <div class="max-w-25 w-full flex items-center justify-center"
+     x-on:drop="removing = false"
+     x-on:drop.prevent="
+                var id = event.dataTransfer.getData('text/plain');
+                var target = event.target.closest('ul');
+                var element = document.getElementById(id);
+                target.appendChild(element);
+            "
+     x-on:dragover.prevent="adding = true"
+     x-on:dragleave.prevent="adding = false"
+    >
+      <div class="max-w-50 w-full"
+      draggable="true"
+      x-data="{ dragging: false }"
+      x-on:dragstart.self="dragging = true
+                          event.dataTransfer.effectAllowed = 'move';
+                          event.dataTransfer.setData('text/plain', event.target.id);
+"
+      x-on:dragend="dragging = false"
+      >
+        <div class="radio__volume-knob"></div>
+      </div>
+    </div>
+
+    <div class="max-w-50 w-full text-center" x-text="message"></div>
+
+    <div class="max-w-25 w-full text-center"
+     x-on:drop="adding = false"
+      x-on:drop.prevent="
+                var id = event.dataTransfer.getData('text/plain');
+                var target = event.target.closest('ul');
+                var element = document.getElementById(id);
+                target.appendChild(element);
+            "
+     x-on:dragover.prevent="adding = true"
+     x-on:dragleave.prevent="adding = false"
+    >
+      <div
+      draggable="true"
+      x-data="{ dragging: false }"
+      x-on:dragstart.self="dragging = true
+      event.dataTransfer.effectAllowed = 'move';
+                          event.dataTransfer.setData('text/plain', event.target.id);"
+      x-on:dragend="dragging = false"
+      >
+        <div>slider</div>
+        <div>
+          <button></button>
+          <button></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

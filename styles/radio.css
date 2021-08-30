@@ -1,0 +1,55 @@
+* {
+  box-sizing: border-box;
+}
+
+.max-w-75 {
+  max-width: 75%;
+}
+.max-w-66 {
+  max-width: 66.66%;
+}
+.max-w-50 {
+  max-width: 50%;
+}
+.max-w-33 {
+  max-width: 33.33%;
+}
+.max-w-25 {
+  max-width: 25%;
+}
+.max-w-20 {
+  max-width: 20%;
+}
+.max-w-10 {
+  max-width: 10%;
+}
+
+.max-h-75 {
+  max-height: 75%;
+}
+.max-h-66 {
+  max-height: 66.66%;
+}
+.max-h-50 {
+  max-height: 50%;
+}
+.max-h-33 {
+  max-height: 33.33%;
+}
+.max-h-25 {
+  max-height: 25%;
+}
+.max-h-20 {
+  max-height: 20%;
+}
+.max-h-10 {
+  max-height: 10%;
+}
+
+.radio__volume-knob {
+  width: 100%;
+  padding-top: 100%;
+  position: relative;
+  border-radius: 50%;
+  background-color: silver;
+}
