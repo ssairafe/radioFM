@@ -4,59 +4,50 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script src="./components/radio.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css">
   <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
   <link href="styles/radio.css" rel="stylesheet">
   <title>FM Radio</title>
 </head>
 <body>
-<div x-data="{message: 'Hello World', adding: false, removing: false}" class="radio w-screen h-screen flex justify-center items-center">
+<div x-data="configureRadio({defaultFrequency: 87900, max: 107900, min: 87900, stepSize: 200}, {defaultVolume: 5, max: 10, min: 0, stepSize: 1})" class="radio w-screen h-screen flex justify-center items-center">
   <div class="max-w-75 flex w-full">
-    <div class="max-w-25 w-full flex items-center justify-center"
-     x-on:drop="removing = false"
-     x-on:drop.prevent="
-                var id = event.dataTransfer.getData('text/plain');
-                var target = event.target.closest('ul');
-                var element = document.getElementById(id);
-                target.appendChild(element);
-            "
-     x-on:dragover.prevent="adding = true"
-     x-on:dragleave.prevent="adding = false"
-    >
-      <div class="max-w-50 w-full"
-      draggable="true"
-      x-data="{ dragging: false }"
-      x-on:dragstart.self="dragging = true
-                          event.dataTransfer.effectAllowed = 'move';
-                          event.dataTransfer.setData('text/plain', event.target.id);
-"
-      x-on:dragend="dragging = false"
-      >
-        <div class="radio__volume-knob"></div>
+
+    <div class="max-w-25 w-full flex items-center justify-center dropContainer" x-on:drop="removing = false" x-on:dragover.prevent="adding = true" x-on:dragleave.prevent="adding = false">
+      <div class="max-w-50 md:max-w-33 w-full">
+        <div class="slider">
+          <div class="knob radio__volume-knob">
+            <template x-if="currentVolume === 0">
+              <span class="absolute top-1/2 left-1/2">
+                <span class="muteIcon icon"></span>
+              </span>
+            </template>
+            <template x-if="currentVolume !== 0">
+              <span class="absolute top-1/2 left-1/2" x-text="currentVolume"></span>
+            </template>
+          </div>
+        </div>
+        <div class="flex justify-between">
+          <button @click.prevent="decrementVolume">-</button>
+          <button @click.prevent="incrementVolume">+</button>
+        </div>
       </div>
     </div>
 
-    <div class="max-w-50 w-full text-center" x-text="message"></div>
+    <div class="max-w-50 w-full flex justify-center items-center">
+      <span class="text-center radio__frequency-display" x-model="currentFrequency" x-text="(currentFrequency / 1000)"></span>
+    </div>
 
-    <div class="max-w-25 w-full text-center"
+    <div class="max-w-25 w-full text-center dropContainer"
      x-on:drop="adding = false"
-      x-on:drop.prevent="
-                var id = event.dataTransfer.getData('text/plain');
-                var target = event.target.closest('ul');
-                var element = document.getElementById(id);
-                target.appendChild(element);
-            "
      x-on:dragover.prevent="adding = true"
      x-on:dragleave.prevent="adding = false"
     >
-      <div
-      draggable="true"
-      x-data="{ dragging: false }"
-      x-on:dragstart.self="dragging = true
-      event.dataTransfer.effectAllowed = 'move';
-                          event.dataTransfer.setData('text/plain', event.target.id);"
-      x-on:dragend="dragging = false"
-      >
-        <div>slider</div>
+      <div>
+        <div>
+          <input type="range" value="0" name="rangeInput" min="87900" max="107900" step="200" x-model="currentFrequency">
+        </div>
         <div>
           <button></button>
           <button></button>
