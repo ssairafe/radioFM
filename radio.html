@@ -11,32 +11,29 @@
   <title>FM Radio</title>
 </head>
 <body>
-<div x-data="configureRadio({defaultFrequency: 87900, max: 107900, min: 87900, stepSize: 200}, {defaultVolume: 5, max: 10, min: 0, stepSize: 1})" class="radio w-screen h-screen flex justify-center items-center">
+<div x-data="configureRadio({frequencyConfiguration: {defaultFrequency: 87900, max: 107900, min: 87900, stepSize: 200}, audioConfiguration: {defaultVolume: 0, max: 10, min: 0, stepSize: 1}})" x-init="init($el, $refs, $dispatch, $watch)" class="radio w-screen h-screen flex justify-center items-center">
   <div class="max-w-75 flex w-full">
 
     <div class="max-w-25 w-full flex items-center justify-center dropContainer" x-on:drop="removing = false" x-on:dragover.prevent="adding = true" x-on:dragleave.prevent="adding = false">
       <div class="max-w-50 md:max-w-33 w-full">
         <div class="slider">
-          <div class="knob radio__volume-knob">
-            <template x-if="currentVolume === 0">
-              <span class="absolute top-1/2 left-1/2">
+          <div x-ref="knobController" class="knob radio__volume-knob">
+            <span></span>
+
+              <span x-ref="muteIcon" class="absolute top-1/2 left-1/2">
                 <span class="muteIcon icon"></span>
               </span>
-            </template>
-            <template x-if="currentVolume !== 0">
-              <span class="absolute top-1/2 left-1/2" x-text="currentVolume"></span>
-            </template>
+
+
+              <span x-ref="volumeDisplay" class="hidden absolute top-1/2 left-1/2"></span>
+
           </div>
-        </div>
-        <div class="flex justify-between">
-          <button @click.prevent="decrementVolume">-</button>
-          <button @click.prevent="incrementVolume">+</button>
         </div>
       </div>
     </div>
 
     <div class="max-w-50 w-full flex justify-center items-center">
-      <span class="text-center radio__frequency-display" x-model="currentFrequency" x-text="(currentFrequency / 1000)"></span>
+      <span class="text-center radio__frequency-display text-2xl md:text-4xl" x-model="currentFrequency" x-text="(currentFrequency / 1000)"></span>
     </div>
 
     <div class="max-w-25 w-full text-center dropContainer"
@@ -46,7 +43,7 @@
     >
       <div>
         <div>
-          <input type="range" value="0" name="rangeInput" min="87900" max="107900" step="200" x-model="currentFrequency">
+          <input class="w-full" type="range" value="0" name="rangeInput" min="87900" max="107900" step="200" x-model="currentFrequency">
         </div>
         <div>
           <button></button>
