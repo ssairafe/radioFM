@@ -12,42 +12,51 @@
 </head>
 <body>
 <div x-data="configureRadio({frequencyConfiguration: {defaultFrequency: 87900, max: 107900, min: 87900, stepSize: 200}, audioConfiguration: {defaultVolume: 0, max: 10, min: 0, stepSize: 1}})" x-init="init($el, $refs, $dispatch, $watch)" class="radio w-screen h-screen flex justify-center items-center" x-cloak>
-  <div class="max-w-75 flex w-full">
+  <div class="max-w-75 flex w-full radio__container">
 
-    <div class="max-w-25 w-full flex items-center justify-center dropContainer" x-on:drop="removing = false" x-on:dragover.prevent="adding = true" x-on:dragleave.prevent="adding = false">
+    <div class="max-w-33 w-full flex items-center justify-center dropContainer" x-on:drop="removing = false" x-on:dragover.prevent="adding = true" x-on:dragleave.prevent="adding = false">
       <div class="max-w-50 md:max-w-33 w-full">
         <div class="slider">
           <div x-ref="knobController" @mousedown="start($event)" @mouseup="stop($event)" @mousemove.prevent="rotate($event)" @touchstart="start($event)" @touchup="stop($event)" @touchmove.prevent="rotate($event)" class="knob radio__volume-knob">
             <span></span>
 
-              <span x-ref="muteIcon" class="absolute top-1/2 left-1/2">
-                <span class="muteIcon icon"></span>
-              </span>
+            <span x-ref="muteIcon" class="absolute top-1/2 left-1/2">
+              <span class="muteIcon icon"></span>
+            </span>
 
 
-              <span x-ref="volumeDisplay" class="hidden absolute top-1/2 left-1/2"></span>
+            <span x-ref="volumeDisplay" class="hidden absolute top-1/2 left-1/2"></span>
+
+            <span>VOL</span>
 
           </div>
         </div>
       </div>
     </div>
 
-    <div class="max-w-50 w-full flex justify-center items-center">
+    <div class="max-w-33 w-full flex flex-col justify-center items-center">
       <span class="text-center radio__frequency-display text-2xl md:text-4xl" x-model="currentFrequency" x-text="(currentFrequency / 1000)"></span>
+      <div class="radio__frequency-slider-container w-full relative mt-4">
+        <input class="w-full" type="range" value="0" name="rangeInput" min="87900" max="107900" step="200"
+          x-model="currentFrequency">
+        <span>Change Frequency</span>
+      </div>
     </div>
 
-    <div class="max-w-25 w-full text-center dropContainer"
+    <div class="max-w-33 w-full flex justify-center text-center dropContainer"
      x-on:drop="adding = false"
      x-on:dragover.prevent="adding = true"
      x-on:dragleave.prevent="adding = false"
     >
-      <div>
-        <div>
-          <input class="w-full" type="range" value="0" name="rangeInput" min="87900" max="107900" step="200" x-model="currentFrequency">
-        </div>
-        <div>
-          <button></button>
-          <button></button>
+      <div class="max-w-80 w-full">
+        <div class="radio__station-container">
+          <template x-for="(item, index) in savedStations" :key="item.key">
+            <div class="flex w-full my-2">
+              <button class="max-w-33 w-full inline-block mx-2" @click.prevent="goToStation(index)" x-text="item.key"></button>
+              <button class="max-w-33 w-full inline-block mx-2 text-xs" @click.prevent="saveStation(index)">SAVE</button>
+              <button class="max-w-33 w-full inline-block mx-2 text-xs" @click.prevent="revertStation(index)">REVERT</button>
+            </div>
+          </template>
         </div>
       </div>
     </div>
