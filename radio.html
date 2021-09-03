@@ -11,13 +11,13 @@
   <title>FM Radio</title>
 </head>
 <body>
-<div x-data="configureRadio({frequencyConfiguration: {defaultFrequency: 87900, max: 107900, min: 87900, stepSize: 200}, audioConfiguration: {defaultVolume: 0, max: 10, min: 0, stepSize: 1}})" x-init="init($el, $refs, $dispatch, $watch)" class="radio w-screen h-screen flex justify-center items-center">
+<div x-data="configureRadio({frequencyConfiguration: {defaultFrequency: 87900, max: 107900, min: 87900, stepSize: 200}, audioConfiguration: {defaultVolume: 0, max: 10, min: 0, stepSize: 1}})" x-init="init($el, $refs, $dispatch, $watch)" class="radio w-screen h-screen flex justify-center items-center" x-cloak>
   <div class="max-w-75 flex w-full">
 
     <div class="max-w-25 w-full flex items-center justify-center dropContainer" x-on:drop="removing = false" x-on:dragover.prevent="adding = true" x-on:dragleave.prevent="adding = false">
       <div class="max-w-50 md:max-w-33 w-full">
         <div class="slider">
-          <div x-ref="knobController" class="knob radio__volume-knob">
+          <div x-ref="knobController" @mousedown="start($event)" @mouseup="stop($event)" @mousemove.prevent="rotate($event)" @touchstart="start($event)" @touchup="stop($event)" @touchmove.prevent="rotate($event)" class="knob radio__volume-knob">
             <span></span>
 
               <span x-ref="muteIcon" class="absolute top-1/2 left-1/2">

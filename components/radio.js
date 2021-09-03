@@ -1,4 +1,6 @@
 function configureRadio(radioConfiguration) {
+  const degreesForVolumeStepsVar = 360 / (radioConfiguration.audioConfiguration.max + 1)
+  const degreesRangeForMuteVar = { negative: 360 - degreesForVolumeStepsVar / 2, positive: degreesForVolumeStepsVar / 2 }
 
   return {
     currentFrequency: radioConfiguration.frequencyConfiguration.defaultFrequency,
@@ -9,123 +11,213 @@ function configureRadio(radioConfiguration) {
     minVolume: radioConfiguration.audioConfiguration.min,
     volumeStepSize: radioConfiguration.audioConfiguration.stepSize,
     savedStations: {},
+    R2D: 180 / Math.PI,
+
+    rotationAngle: 0,
+
+    degreesForVolumeSteps: degreesForVolumeStepsVar,
+
+    degreesRangeForMute: degreesRangeForMuteVar,
+
+    volumeDisplay: undefined,
+
+    muteIcon: undefined,
+
+    target: undefined,
+
+    active: false,
+
+    angle: 0,
+
+    rotation: 0,
+
+    startAngle: 0,
+
+    center: {
+      x: 0,
+      y: 0
+    },
     init: function ($el, $refs, $dispatch, $watch) {
       if($refs) {
+        this.target = $refs.knobController
+        this.volumeDisplay = $refs.volumeDisplay
+        this.muteIcon = $refs.muteIcon
 
-        (function () {
-          var R2D, active, angle, center, init, rotate, rotation, start, startAngle, stop;
 
-          volumeDisplay = $refs.volumeDisplay;
+          // this.target.addEventListener('mousedown', this.start, false);
+          // document.addEventListener('touchstart', (e) => {
+          //   console.log(e.target)
+          //   if (e.target === this.target) {
+          //     console.log('touchstart')
+          //     this.target.addEventListener('touchstart', this.start, false);
+          //     return this.target.addEventListener('touchend', this.stop, false);
+          //   }
+          // });
 
-          muteIcon = $refs.muteIcon;
+          // return this.target.addEventListener('mouseup', this.stop, false);
 
-          target = $refs.knobController;
+        // (function () {
+        //   var R2D, active, angle, center, init, rotate, rotation, start, startAngle, stop, rotationAngle;
 
-          active = false;
+        //   degreesForVolumeSteps = 360 / (this.maxVolume + 1);
 
-          angle = 0;
+        //   degreesRangeForMute = { negative: 360 - degreesForVolumeSteps / 2, positive: degreesForVolumeSteps / 2};
 
-          rotation = 0;
+        //   volumeDisplay = $refs.volumeDisplay;
 
-          startAngle = 0;
+        //   muteIcon = $refs.muteIcon;
 
-          center = {
-            x: 0,
-            y: 0
-          };
+        //   target = $refs.knobController;
 
-          // document.ontouchmove = function (e) {
-          //   return e.preventDefault();
-          // };
+        //   active = false;
 
-          init = function () {
-            target.addEventListener('mousedown', start, false);
-            target.addEventListener('touchstart', start, { passive: true });
+        //   angle = 0;
 
-            return target.addEventListener('mouseup', stop, false) || target.addEventListener('touchend', stop, { passive: true });
-          };
+        //   rotation = 0;
 
-          R2D = 180 / Math.PI;
+        //   startAngle = 0;
 
-          start = function (e) {
-            target.addEventListener('mousemove', rotate, false)
-            target.addEventListener('touchmove', start, { passive: true });
-            var height, left, top, width, x, y, _ref;
-            //e.preventDefault();
-            _ref = this.getBoundingClientRect(), top = _ref.top, left = _ref.left, height = _ref.height, width = _ref.width;
-            center = {
-              x: left + (width / 2),
-              y: top + (height / 2)
-            };
-            x = e.clientX - center.x;
-            y = e.clientY - center.y;
-            startAngle = R2D * Math.atan2(y, x);
-            return active = true;
-          };
+        //   center = {
+        //     x: 0,
+        //     y: 0
+        //   };
 
-          rotate = function (e) {
-            var d, x, y;
-            e.preventDefault();
-            x = e.clientX - center.x;
-            y = e.clientY - center.y;
-            d = R2D * Math.atan2(y, x);
-            rotation = d - startAngle;
+        //   // document.ontouchmove = function (e) {
+        //   //   return e.preventDefault();
+        //   // };
 
-            if (active) {
-              if ((rotation + angle) < 6 && (rotation + angle) > -6) {
-                muteIcon.classList.remove('hidden')
-                volumeDisplay.classList.add('hidden')
-              } else {
-                muteIcon.classList.add('hidden')
-                volumeDisplay.classList.remove('hidden')
-                if ((rotation + angle) > 6 && (rotation + angle) < 36) {
-                  volumeDisplay.innerText = 1
-                }
-                if ((rotation + angle) > 36 && (rotation + angle) < 72) {
-                  volumeDisplay.innerText = 2
-                }
-                if ((rotation + angle) > 72 && (rotation + angle) < 108) {
-                  volumeDisplay.innerText = 3
-                }
-                if ((rotation + angle) > 108 && (rotation + angle) < 144) {
-                  volumeDisplay.innerText = 4
-                }
-                if ((rotation + angle) > 144 && (rotation + angle) < 180) {
-                  volumeDisplay.innerText = 5
-                }
-                if ((rotation + angle) > 180 && (rotation + angle) < 216) {
-                  volumeDisplay.innerText = 6
-                }
-                if ((rotation + angle) > 216 && (rotation + angle) < 252) {
-                  volumeDisplay.innerText = 7
-                }
-                if ((rotation + angle) > -90 && (rotation + angle) < -60) {
-                  volumeDisplay.innerText = 8
-                }
-                if ((rotation + angle) > -60 && (rotation + angle) < -30) {
-                  volumeDisplay.innerText = 9
-                }
-                if ((rotation + angle) > -30 && (rotation + angle) < -6) {
-                  volumeDisplay.innerText = 10
-                }
-              }
+        //   init = function () {
 
-              return this.style.webkitTransform = 'rotate(' + (angle + rotation) + 'deg)';
-            }
-          };
+        //     target.addEventListener('mousedown', start, false);
+        //     document.addEventListener('touchstart', (e) => {
+        //       console.log(e.target)
+        //       if (e.target === target) {
+        //         console.log('touchstart')
+        //         target.addEventListener('touchstart', start, false);
+        //         return target.addEventListener('touchend', stop, false);
+        //       }
+        //     });
 
-          stop = function () {
-            target.removeEventListener('mousemove', rotate, false);
-            target.removeEventListener('touchmove', rotate);
-            angle += rotation;
-            return active = false;
-          };
+        //     return target.addEventListener('mouseup', stop, false);
+        //   };
 
-          init();
+        //   R2D = 180 / Math.PI;
 
-        }).call(this);
+        //   start = function (e) {
+        //     if(e.type === "touchstart") {
+        //       target.addEventListener('touchmove', rotate, false)
+        //     }
+        //     target.addEventListener('mousemove', rotate, false)
+
+        //     var height, left, top, width, x, y, _ref;
+        //     //e.preventDefault();
+        //     _ref = this.getBoundingClientRect(), top = _ref.top, left = _ref.left, height = _ref.height, width = _ref.width;
+        //     center = {
+        //       x: left + (width / 2),
+        //       y: top + (height / 2)
+        //     };
+        //     x = e.clientX - center.x;
+        //     y = e.clientY - center.y;
+        //     startAngle = R2D * Math.atan2(y, x);
+        //     return active = true;
+        //   };
+
+        //   rotate = function (e) {
+        //     var d, x, y;
+        //     e.preventDefault();
+        //     x = e.clientX - center.x;
+        //     y = e.clientY - center.y;
+        //     d = R2D * Math.atan2(y, x);
+        //     rotation = d - startAngle;
+        //     rotationAngle = (rotation + angle > 0) ? (rotation + angle) : ((rotation + angle) + 360);
+
+
+        //     if (active) {
+
+        //       if (rotationAngle > degreesRangeForMute.negative || rotationAngle < degreesRangeForMute.positive) {
+        //         muteIcon.classList.remove('hidden')
+        //         volumeDisplay.classList.add('hidden')
+        //       } else {
+        //         muteIcon.classList.add('hidden')
+        //         volumeDisplay.classList.remove('hidden')
+
+        //         volumeDisplay.innerText = Math.ceil((rotationAngle - degreesRangeForMute.positive) / degreesForVolumeSteps)
+
+        //       }
+
+        //       volumeDisplay.style.webkitTransform = `translate(-50%, -50%) rotate(${0 - rotationAngle}deg)`;
+        //       muteIcon.style.webkitTransform = `translate(-50%, -50%) rotate(${0 - rotationAngle}deg)`;
+
+        //       return this.style.webkitTransform = 'rotate(' + rotationAngle + 'deg)';
+        //     }
+        //   };
+
+        //   stop = function () {
+        //     target.removeEventListener('mousemove', rotate, false);
+        //     target.removeEventListener('touchmove', rotate, false);
+        //     angle += rotation;
+        //     return active = false;
+        //   };
+
+        //   init();
+
+        // }).call(this);
       }
 
+    },
+    start: function (e) {
+      // console.log(e)
+      // this.target = element
+      // this.target.addEventListener('mousemove', this.rotate, false)
+
+        var height, left, top, width, x, y, _ref;
+        //e.preventDefault();
+        _ref = this.target.getBoundingClientRect(), top = _ref.top, left = _ref.left, height = _ref.height, width = _ref.width;
+        this.center = {
+          x: left + (width / 2),
+          y: top + (height / 2)
+        };
+        console.log('cx', this.center)
+        x = e.clientX - this.center.x;
+        y = e.clientY - this.center.y;
+        this.startAngle = this.R2D * Math.atan2(y, x);
+        return this.active = true;
+    },
+    rotate: function (e) {
+      var d, x, y;
+      //e.preventDefault();
+      x = e.clientX - this.center.x;
+      y = e.clientY - this.center.y;
+      d = this.R2D * Math.atan2(y, x);
+      this.rotation = d - this.startAngle;
+      this.rotationAngle = (this.rotation + this.angle > 0) ? (this.rotation + this.angle) : ((this.rotation + this.angle) + 360);
+
+
+      if (this.active) {
+
+        if (this.rotationAngle > this.degreesRangeForMute.negative || this.rotationAngle < this.degreesRangeForMute.positive) {
+          this.muteIcon.classList.remove('hidden')
+          this.volumeDisplay.classList.add('hidden')
+        } else {
+          this.muteIcon.classList.add('hidden')
+          this.volumeDisplay.classList.remove('hidden')
+          console.log(this.degreesForVolumeSteps)
+          this.volumeDisplay.innerText = Math.ceil((this.rotationAngle - this.degreesRangeForMute.positive) / this.degreesForVolumeSteps)
+
+        }
+
+        this.volumeDisplay.style.webkitTransform = `translate(-50%, -50%) rotate(${0 - this.rotationAngle}deg)`;
+        this.muteIcon.style.webkitTransform = `translate(-50%, -50%) rotate(${0 - this.rotationAngle}deg)`;
+
+        return this.target.style.webkitTransform = 'rotate(' + this.rotationAngle + 'deg)';
+      }
+    },
+    stop: function () {
+
+        this.target.removeEventListener('mousemove', this.rotate, false);
+        this.target.removeEventListener('touchmove', this.rotate, false);
+        this.angle += this.rotation;
+        return this.active = false;
     }
   }
 }
