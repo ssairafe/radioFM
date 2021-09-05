@@ -1,21 +1,11 @@
 function configureRadio(radioConfiguration) {
-  const degreesForVolumeStepsVar = 360 / (radioConfiguration.audioConfiguration.max + 1)
-  const degreesRangeForMuteVar = { negative: 360 - degreesForVolumeStepsVar / 2, positive: degreesForVolumeStepsVar / 2 }
+  const degreesForVolumeStepsVar = 360 / (radioConfiguration.audioConfiguration.max + 1);
+  const degreesRangeForMuteVar = { negative: 360 - degreesForVolumeStepsVar / 2, positive: degreesForVolumeStepsVar / 2 };
 
   return {
     currentFrequency: radioConfiguration.frequencyConfiguration.defaultFrequency,
 
-    maxFrequency: radioConfiguration.frequencyConfiguration.max,
-
-    minFrequency: radioConfiguration.frequencyConfiguration.min,
-
     currentVolume: radioConfiguration.audioConfiguration.defaultVolume,
-
-    maxVolume: radioConfiguration.audioConfiguration.max,
-
-    minVolume: radioConfiguration.audioConfiguration.min,
-
-    volumeStepSize: radioConfiguration.audioConfiguration.stepSize,
 
     savedStations: [
       {
@@ -62,7 +52,11 @@ function configureRadio(radioConfiguration) {
 
     muteIcon: undefined,
 
+    targetKnob: undefined,
+
     knob: undefined,
+
+    mobileKnob: undefined,
 
     active: false,
 
@@ -78,23 +72,25 @@ function configureRadio(radioConfiguration) {
     },
     init: function ($el, $refs, $dispatch, $watch) {
       if($refs) {
-        this.knob = $refs.knobController
-        this.volumeDisplay = $refs.volumeDisplay
-        this.muteIcon = $refs.muteIcon
+        this.knob = $refs.knobController;
+        this.mobileKnob = $refs.knobControllerMobile;
+        this.volumeDisplay = $refs.volumeDisplay;
+        this.muteIcon = $refs.muteIcon;
       }
     },
     start: function (e) {
-        var height, left, top, width, x, y, _ref;
-        _ref = this.knob.getBoundingClientRect(),
-        top = _ref.top, left = _ref.left, height = _ref.height, width = _ref.width;
-        this.center = {
-          x: left + (width / 2),
-          y: top + (height / 2)
-        };
-        x = (e.clientX || e.touches[0].clientX) - this.center.x;
-        y = (e.clientY || e.touches[0].clientY) - this.center.y;
-        this.startAngle = this.R2D * Math.atan2(y, x);
-        return this.active = true;
+      this.targetKnob = e.currentTarget.classList.contains('knob-mobile') ? this.mobileKnob : this.knob;
+      var height, left, top, width, x, y, _ref;
+    _ref = this.targetKnob.getBoundingClientRect(),
+      top = _ref.top, left = _ref.left, height = _ref.height, width = _ref.width;
+      this.center = {
+        x: left + (width / 2),
+        y: top + (height / 2)
+      };
+      x = (e.clientX || e.touches[0].clientX) - this.center.x;
+      y = (e.clientY || e.touches[0].clientY) - this.center.y;
+      this.startAngle = this.R2D * Math.atan2(y, x);
+      return this.active = true;
     },
     rotate: function (e) {
       var d, x, y;
@@ -103,30 +99,27 @@ function configureRadio(radioConfiguration) {
       d = this.R2D * Math.atan2(y, x);
       this.rotation = d - this.startAngle;
       this.rotationAngle = (this.rotation + this.angle > 0) ? (this.rotation + this.angle) : ((this.rotation + this.angle) + 360);
+
       if (this.rotationAngle > 360) {
         this.rotationAngle = 0;
       }
 
       if (this.active) {
         if (this.rotationAngle > this.degreesRangeForMute.negative || this.rotationAngle < this.degreesRangeForMute.positive) {
-          this.muteIcon.classList.remove('hidden')
-          this.volumeDisplay.classList.add('hidden')
+          this.currentVolume = 0;
         } else {
-          this.muteIcon.classList.add('hidden')
-          this.volumeDisplay.classList.remove('hidden')
-          this.volumeDisplay.innerText = Math.ceil((this.rotationAngle - this.degreesRangeForMute.positive) / this.degreesForVolumeSteps)
-
+          this.currentVolume = Math.ceil((this.rotationAngle - this.degreesRangeForMute.positive) / this.degreesForVolumeSteps);
         }
 
         this.volumeDisplay.style.webkitTransform = `translate(-50%, -50%) rotate(${0 - this.rotationAngle}deg)`;
         this.muteIcon.style.webkitTransform = `translate(-50%, -50%) rotate(${0 - this.rotationAngle}deg)`;
 
-        return this.knob.style.webkitTransform = 'rotate(' + this.rotationAngle + 'deg)';
+        return this.targetKnob.style.webkitTransform = 'rotate(' + this.rotationAngle + 'deg)';
       }
     },
     stop: function () {
-        this.knob.removeEventListener('mousemove', this.rotate, false);
-        this.knob.removeEventListener('touchmove', this.rotate, false);
+      this.targetKnob.removeEventListener('mousemove', this.rotate, false);
+      this.targetKnob.removeEventListener('touchmove', this.rotate, false);
         this.angle += this.rotation;
         return this.active = false;
     },

@@ -116,7 +116,6 @@ input[type=range]::-ms-thumb {
 .radio__container {
   border: 3px solid white;
   box-shadow: 0px 0px 10px #349beb, inset 0px 0px 10px #349beb;
-  padding: 5% 0;
 }
 
 .radio__frequency-display {
@@ -129,7 +128,6 @@ input[type=range]::-ms-thumb {
   box-shadow: 0px 0px 10px #349beb, inset 0px 0px 10px #349beb;
   color: white;
   text-shadow: 2px 2px 5px white, 0 0 15px #349beb, 0 0 25px #2195ee;
-  padding: 5% 0;
 }
 
 .radio__volume-knob > span {
@@ -154,7 +152,7 @@ input[type=range]::-ms-thumb {
 }
 
 
-.slider::before {
+.radio__knob-container::before {
   background: linear-gradient(
     0deg, #525252 0%, #373737 100%
   );
@@ -167,14 +165,14 @@ input[type=range]::-ms-thumb {
     inset 0px -5px 6px #242424;
 }
 
-.slider::before, .knob {
+.radio__knob-container::before, .knob {
   width: 10em;
   height: 10em;
   position: relative;
 }
 
 .knob::after,
-.slider::before {
+.radio__knob-container::before {
   content: '';
   position: absolute;
   border-radius: 50%;
@@ -223,7 +221,7 @@ div.radio__frequency-slider-container > span {
   position: absolute;
   width: 100%;
   left: 50%;
-  bottom: 20%;
+  bottom: 40%;
   transform: translateX(-50%);
   text-align: center;
 }
@@ -236,4 +234,31 @@ div.radio__station-container button {
   border: 3px solid white;
   box-shadow: 0px 0px 10px #349beb, inset 0px 0px 10px #349beb;
   color: white;
+}
+
+.radio__knob-container-mobile {
+  transform: translate(-5%, 25%);
+}
+
+.radio__knob-container-mobile::before, .knob-mobile {
+    width: 8em;
+    height: 8em;
+}
+
+.radio__knob-container-mobile::before {
+  transform: translate(-50%, 0%);
+}
+
+.knob-mobile::after {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 110%;
+  height: 110%;
+}
+
+@media(max-width: 1023px) {
+  div.radio__frequency-slider-container > span {
+    bottom: 20%;
+  }
 }

@@ -11,21 +11,21 @@
   <title>FM Radio</title>
 </head>
 <body>
-<div x-data="configureRadio({frequencyConfiguration: {defaultFrequency: 87900, max: 107900, min: 87900, stepSize: 200}, audioConfiguration: {defaultVolume: 0, max: 10, min: 0, stepSize: 1}})" x-init="init($el, $refs, $dispatch, $watch)" class="radio w-screen h-screen flex justify-center items-center" x-cloak>
-  <div class="max-w-75 flex w-full radio__container">
+<div x-data="configureRadio({frequencyConfiguration: {defaultFrequency: 87900}, audioConfiguration: {defaultVolume: 0, max: 10}})" x-init="init($el, $refs, $dispatch, $watch)" class="radio w-screen h-screen flex justify-center items-center p-2 md:p-6" x-cloak>
+  <div class="flex flex-col justify-center items-center max-w-full w-full h-full p-4 lg:px-0 lg:py-8 lg:flex-row lg:max-w-75 lg:h-auto radio__container">
 
-    <div class="max-w-33 w-full flex items-center justify-center dropContainer" x-on:drop="removing = false" x-on:dragover.prevent="adding = true" x-on:dragleave.prevent="adding = false">
-      <div class="max-w-50 md:max-w-33 w-full">
-        <div class="slider">
+    <div class="lg:max-w-33 max-w-full w-full flex items-center justify-center dropContainer" x-on:drop="removing = false" x-on:dragover.prevent="adding = true" x-on:dragleave.prevent="adding = false">
+      <div class="max-w-full flex justify-center w-full">
+        <div class="radio__knob-container hidden lg:block">
           <div x-ref="knobController" @mousedown="start($event)" @mouseup="stop($event)" @mousemove.prevent="rotate($event)" @touchstart="start($event)" @touchup="stop($event)" @touchmove.prevent="rotate($event)" class="knob radio__volume-knob">
             <span></span>
 
-            <span x-ref="muteIcon" class="absolute top-1/2 left-1/2">
+            <span x-ref="muteIcon" class="absolute top-1/2 left-1/2" x-show="!currentVolume">
               <span class="muteIcon icon"></span>
             </span>
 
 
-            <span x-ref="volumeDisplay" class="hidden absolute top-1/2 left-1/2"></span>
+            <span x-ref="volumeDisplay" class="absolute top-1/2 left-1/2" x-show="currentVolume" x-text="currentVolume"></span>
 
             <span>VOL</span>
 
@@ -34,21 +34,38 @@
       </div>
     </div>
 
-    <div class="max-w-33 w-full flex flex-col justify-center items-center">
+    <div class="lg:max-w-33 px-6 max-w-full w-full flex flex-col justify-center items-center">
       <span class="text-center radio__frequency-display text-2xl md:text-4xl" x-model="currentFrequency" x-text="(currentFrequency / 1000)"></span>
-      <div class="radio__frequency-slider-container w-full relative mt-4">
+      <div class="radio__frequency-slider-container p-0 lg:py-8 w-full relative mt-4">
         <input class="w-full" type="range" value="0" name="rangeInput" min="87900" max="107900" step="200"
           x-model="currentFrequency">
         <span>Change Frequency</span>
       </div>
     </div>
 
-    <div class="max-w-33 w-full flex justify-center text-center dropContainer"
+    <div class="lg:max-w-33 relative px-6 max-w-full w-full flex flex-col items-center mt-0 sm:mt-4 sm:flex-row justify-center text-center dropContainer"
      x-on:drop="adding = false"
      x-on:dragover.prevent="adding = true"
      x-on:dragleave.prevent="adding = false"
     >
-      <div class="max-w-80 w-full">
+      <div class="radio__knob-container radio__knob-container-mobile h-full inline-block relative lg:hidden">
+        <div x-ref="knobControllerMobile" @mousedown="start($event)" @mouseup="stop($event)" @mousemove.prevent="rotate($event)"
+          @touchstart="start($event)" @touchup="stop($event)" @touchmove.prevent="rotate($event)"
+          class="knob knob-mobile radio__volume-knob">
+          <span></span>
+
+          <span x-ref="muteIcon" class="absolute top-1/2 left-1/2" x-show="!currentVolume">
+            <span class="muteIcon icon"></span>
+          </span>
+
+
+          <span x-ref="volumeDisplay" class="absolute top-1/2 left-1/2" x-show="currentVolume" x-text="currentVolume"></span>
+
+          <span>VOL</span>
+
+        </div>
+      </div>
+      <div class="lg:max-w-80 mt-16 sm:mt-0 max-w-full w-full">
         <div class="radio__station-container">
           <template x-for="(item, index) in savedStations" :key="item.key">
             <div class="flex w-full my-2">
