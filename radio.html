@@ -12,68 +12,59 @@
 </head>
 <body>
 <div x-data="configureRadio({frequencyConfiguration: {defaultFrequency: 87900}, audioConfiguration: {defaultVolume: 0, max: 10}})" x-init="init($el, $refs, $dispatch, $watch)" class="radio w-screen h-screen flex justify-center items-center p-2 md:p-6" x-cloak>
-  <div class="flex flex-col justify-center items-center max-w-full w-full h-full p-4 lg:px-0 lg:py-8 lg:flex-row lg:max-w-75 lg:h-auto radio__container">
-
-    <div class="lg:max-w-33 max-w-full w-full flex items-center justify-center dropContainer" x-on:drop="removing = false" x-on:dragover.prevent="adding = true" x-on:dragleave.prevent="adding = false">
+  <div class="flex flex-col justify-center sm:items-center max-w-full w-full h-full p-4 lg:p-8 lg:flex-row lg:max-w-75 lg:h-auto radio__container">
+    <div class="lg:max-w-33 max-w-full w-full flex items-center justify-center dropContainer">
       <div class="max-w-full flex justify-center w-full">
         <div class="radio__knob-container hidden lg:block">
           <div x-ref="knobController" @mousedown="start($event)" @mouseup="stop($event)" @mousemove.prevent="rotate($event)" @touchstart="start($event)" @touchup="stop($event)" @touchmove.prevent="rotate($event)" class="knob radio__volume-knob">
             <span></span>
-
             <span x-ref="muteIcon" class="absolute top-1/2 left-1/2" x-show="!currentVolume">
               <span class="muteIcon icon"></span>
             </span>
-
-
             <span x-ref="volumeDisplay" class="absolute top-1/2 left-1/2" x-show="currentVolume" x-text="currentVolume"></span>
-
             <span>VOL</span>
-
           </div>
         </div>
       </div>
     </div>
 
-    <div class="lg:max-w-33 px-6 max-w-full w-full flex flex-col justify-center items-center">
-      <span class="text-center radio__frequency-display text-2xl md:text-4xl" x-model="currentFrequency" x-text="(currentFrequency / 1000)"></span>
-      <div class="radio__frequency-slider-container p-0 lg:py-8 w-full relative mt-4">
-        <input class="w-full" type="range" value="0" name="rangeInput" min="87900" max="107900" step="200"
-          x-model="currentFrequency">
-        <span>Change Frequency</span>
+    <div class="lg:max-w-33 px-6 max-w-full w-full flex flex-col justify-center items-center" @drop="drop($event)" @dragover="dragOver($event)">
+      <div class="w-full cursor-move draggable-item" draggable="true" @dragstart="dragStart($event)">
+        <span class="text-center radio__frequency-display block text-2xl md:text-4xl" x-model="currentFrequency"
+          x-text="(currentFrequency / 1000)"></span>
+        <div class="radio__frequency-slider-container p-0 lg:py-8 w-full relative mt-4">
+          <input class="w-full" type="range" value="0" name="rangeInput" min="87900" max="107900" step="200" @mousedown="handleSliderMouseDown($event)" @mouseup="handleSliderMouseUp($event)"
+            x-model="currentFrequency">
+          <span>Change Frequency</span>
+        </div>
       </div>
     </div>
 
-    <div class="lg:max-w-33 relative px-6 max-w-full w-full flex flex-col items-center mt-0 sm:mt-4 sm:flex-row justify-center text-center dropContainer"
-     x-on:drop="adding = false"
-     x-on:dragover.prevent="adding = true"
-     x-on:dragleave.prevent="adding = false"
-    >
-      <div class="radio__knob-container radio__knob-container-mobile h-full inline-block relative lg:hidden">
-        <div x-ref="knobControllerMobile" @mousedown="start($event)" @mouseup="stop($event)" @mousemove.prevent="rotate($event)"
-          @touchstart="start($event)" @touchup="stop($event)" @touchmove.prevent="rotate($event)"
-          class="knob knob-mobile radio__volume-knob">
-          <span></span>
-
-          <span x-ref="muteIcon" class="absolute top-1/2 left-1/2" x-show="!currentVolume">
-            <span class="muteIcon icon"></span>
-          </span>
-
-
-          <span x-ref="volumeDisplay" class="absolute top-1/2 left-1/2" x-show="currentVolume" x-text="currentVolume"></span>
-
-          <span>VOL</span>
-
+    <div class="lg:max-w-33 relative px-6 max-w-full w-full flex" @drop="drop($event)" @dragover="dragOver($event)">
+      <div class="w-full flex flex-col items-center mt-0 sm:mt-4 sm:flex-row justify-center text-center cursor-move draggable-item" draggable="true" @dragstart="dragStart($event)">
+        <div class="radio__knob-container radio__knob-container-mobile h-full inline-block relative h-full sm:h-auto sm:bottom-1/4 lg:hidden">
+          <div x-ref="knobControllerMobile" @mousedown="start($event)" @mouseup="stop($event)"
+            @mousemove.prevent="rotate($event)" @touchstart="start($event)" @touchup="stop($event)"
+            @touchmove.prevent="rotate($event)" class="knob knob-mobile radio__volume-knob">
+            <span></span>
+            <span x-ref="muteIcon" class="absolute top-1/2 left-1/2" x-show="!currentVolume">
+              <span class="muteIcon icon"></span>
+            </span>
+            <span x-ref="volumeDisplay" class="absolute top-1/2 left-1/2" x-show="currentVolume" x-text="currentVolume"></span>
+            <span>VOL</span>
+          </div>
         </div>
-      </div>
-      <div class="lg:max-w-80 mt-16 sm:mt-0 max-w-full w-full">
-        <div class="radio__station-container">
-          <template x-for="(item, index) in savedStations" :key="item.key">
-            <div class="flex w-full my-2">
-              <button class="max-w-33 w-full inline-block mx-2" @click.prevent="goToStation(index)" x-text="item.key"></button>
-              <button class="max-w-33 w-full inline-block mx-2 text-xs" @click.prevent="saveStation(index)">SAVE</button>
-              <button class="max-w-33 w-full inline-block mx-2 text-xs" @click.prevent="revertStation(index)">REVERT</button>
-            </div>
-          </template>
+        <div class="lg:max-w-80 mt-16 sm:mt-0 max-w-full w-full">
+          <div class="radio__station-container">
+            <template x-for="(item, index) in savedStations" :key="item.key">
+              <div class="flex w-full my-2">
+                <button class="max-w-33 w-full inline-block mx-2" @click.prevent="goToStation(index)"
+                  x-text="item.key"></button>
+                <button class="max-w-33 w-full inline-block mx-2 text-xs" @click.prevent="saveStation(index)">SAVE</button>
+                <button class="max-w-33 w-full inline-block mx-2 text-xs" @click.prevent="revertStation(index)">REVERT</button>
+              </div>
+            </template>
+          </div>
         </div>
       </div>
     </div>

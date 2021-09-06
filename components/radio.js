@@ -70,6 +70,43 @@ function configureRadio(radioConfiguration) {
       x: 0,
       y: 0
     },
+
+    draggingItem: undefined,
+
+    draggingItemContainer: undefined,
+
+    dropContainer: undefined,
+
+    dropContainerElement: undefined,
+
+    handleSliderMouseDown: function(e) {
+      let dragParent = e.target.closest('[draggable=true]');
+      dragParent.setAttribute('draggable', false)
+    },
+
+    handleSliderMouseUp: function (e) {
+      let dragParent = e.target.closest('[draggable=false]');
+      dragParent.setAttribute('draggable', true)
+    },
+
+    dragStart: function(e) {
+      this.draggingItem = e.target;
+      this.draggingItemContainer = e.target.parentNode;
+    },
+
+    dragOver: function(e) {
+      this.dropContainer = e.currentTarget;
+      this.dropContainerElement = e.currentTarget.querySelector('div');
+      e.preventDefault()
+    },
+
+    drop: function(e) {
+      this.draggingItemContainer.innerHTML = ''
+      this.dropContainer.innerHTML = ''
+      this.draggingItemContainer.appendChild(this.dropContainerElement)
+      this.dropContainer.appendChild(this.draggingItem)
+    },
+
     init: function ($el, $refs, $dispatch, $watch) {
       if($refs) {
         this.knob = $refs.knobController;

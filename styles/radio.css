@@ -51,6 +51,10 @@
   max-height: 10%;
 }
 
+.draggable-item {
+  cursor: grab;
+}
+
 input[type=range] {
   -webkit-appearance: none;
   width: 100%;
@@ -138,12 +142,12 @@ input[type=range]::-ms-thumb {
 }
 
 .icon::before {
-    display: inline-block;
-    font-style: normal;
-    font-variant: normal;
-    text-rendering: auto;
-    -webkit-font-smoothing: antialiased;
-  }
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+}
 
 .muteIcon::before {
   font-family: "Font Awesome 5 Free";
@@ -190,28 +194,28 @@ input[type=range]::-ms-thumb {
 }
 
 div.knob.radio__volume-knob > span:first-of-type {
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 15px;
-    height: 15px;
-    background-color: white;
-    box-shadow: 0px 0px 10px #349beb, inset 0px 0px 4px #2195ee;
-    position: absolute;
-    z-index: 100;
-    border-radius: 50%;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 15px;
+  height: 15px;
+  background-color: white;
+  box-shadow: 0px 0px 10px #349beb, inset 0px 0px 4px #2195ee;
+  position: absolute;
+  z-index: 100;
+  border-radius: 50%;
 }
 
 div.knob.radio__volume-knob > span:last-of-type {
-    bottom: 0px;
-    left: 50%;
-    text-align: center;
-    color: white;
-    text-shadow: 2px 2px 5px white, 0 0 15px #349beb, 0 0 25px #2195ee;
-    position: absolute;
-    z-index: 100;
-    border-radius: 50%;
-    font-size: 1rem;
+  bottom: 0px;
+  left: 50%;
+  text-align: center;
+  color: white;
+  text-shadow: 2px 2px 5px white, 0 0 15px #349beb, 0 0 25px #2195ee;
+  position: absolute;
+  z-index: 100;
+  border-radius: 50%;
+  font-size: 1rem;
 }
 
 div.radio__frequency-slider-container > span {
